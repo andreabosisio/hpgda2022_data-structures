@@ -1,0 +1,23 @@
+{
+    "configurations": [
+        {
+            "name": "C++ Launch",
+            "type": "cppdbg",
+            "request": "launch",
+            "program": "${workspaceFolder}/bin/exe",
+            "args": ["data/example_directed", "2", "-d"],
+            "stopAtEntry": false,
+            "cwd": "${workspaceFolder}",
+            "customLaunchSetupCommands": [
+            ],
+            "launchCompleteCommand": "exec-run",
+            "linux": {
+              "MIMode": "gdb",
+              "miDebuggerPath": "/usr/bin/gdb"
+            },
+            "osx": {
+              "MIMode": "lldb"
+            }
+          }
+    ]
+}
