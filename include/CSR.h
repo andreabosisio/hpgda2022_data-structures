@@ -1,12 +1,13 @@
-#ifndef ORACLE_CONTEST_ADJACENCYLIST_H
-#define ORACLE_CONTEST_ADJACENCYLIST_H
+#ifndef ORACLE_CONTEST_CSR_H
+#define ORACLE_CONTEST_CSR_H
 
+#include <iostream>
 #include <list>
 #include <vector>
 #include <functional>
 
-// Adjacency list implementation of Graph
-class MyImpl{
+// Compressed Sparse Row (CSR) implementation of Graph
+class CSR{
 
     class EdgeIter {
         
@@ -49,24 +50,31 @@ class MyImpl{
     std::list<uint64_t>* edges;
     std::list<double>* weights;
 
+    u_int64_t* col_idx;
+    u_int64_t* row_ptr;
+    double* values;
+
 public:
 
     EdgeIter get_neighbors(int idx){
         return EdgeIter(begin(idx), end(idx), begin_weights(idx));
     }
 
-    MyImpl(uint64_t num_vertices, uint64_t num_edges) : num_vertices(num_vertices), num_edges(num_edges){
-        edges = new std::list<uint64_t>[num_vertices + 2];
-        weights = new std::list<double>[num_vertices + 2];
-        for(int i = 0; i <= num_vertices; ++i)
-            edges[i].clear(), weights[i].clear();
+    CSR(uint64_t num_vertices, uint64_t num_edges) : num_vertices(num_vertices), num_edges(num_edges){
+
+        col_idx = new uint64_t[num_edges + 2];
+        values = new double[num_edges + 2];
+        row_ptr = new uint64_t[num_vertices + 2];
+        
+        for(uint64_t i = 0; i <= num_vertices; ++i)
+            row_ptr[i] = 0;
     }
 
-    ~MyImpl(){
-        for(int i = 0; i <= num_vertices; ++i)
-            edges[i].clear(), weights[i].clear();
-        delete[] edges;
-        delete[] weights;
+    ~CSR(){
+        delete[] col_idx;
+        delete[] values;
+        delete[] row_ptr;    
+
         //std::cout<<"AdjacencyList delete"<<std::endl;
     }
 
@@ -79,6 +87,8 @@ public:
     void finished();
 
     void populate(std::tuple<uint64_t, uint64_t, double>* e_list);
+
+    void print();
 
     inline std::list<uint64_t>::iterator begin(int cur_vertex) {
         return edges[cur_vertex].begin();
@@ -95,4 +105,4 @@ public:
 };
 
 
-#endif //ORACLE_CONTEST_ADJACENCYLIST_H
+#endif //ORACLE_CONTEST_CSR_H

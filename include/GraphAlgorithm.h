@@ -117,6 +117,10 @@ public:
         return dfs_recursion(cur_vertex);
     }
 
+    void print() {
+        graph->print();
+    }
+
 };
 
 #endif //ORACLE_CONTEST_GRAPHALGORITHM_H

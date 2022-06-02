@@ -1,5 +1,5 @@
 #include "../include/utils.h"
-#include "../include/MyImpl.h"
+#include "../include/CSR.h"
 #include "../include/GraphAlgorithm.h"
 #include <fstream>
 #include <ostream>
@@ -63,8 +63,6 @@ int main(int argc, char **argv) {
     nodes = load_graph(graphName, undirected, edges, num_edges);
     if(debug) std::cout << "Graph loaded!" << std::endl << std::endl;
 
-    std::sort(edges, edges + num_edges); // O(num_edges * log(num_edges))
-
     // get increment in memory usage after loading the graph
     process_mem_usage(vm_usage, resident_set_size, true);
     if(debug) std::cout << "Edge list size: " << resident_set_size/1024 << " MB" << std::endl << std::endl;
@@ -82,7 +80,7 @@ int main(int argc, char **argv) {
     process_mem_usage(vm_usage, resident_set_size, false);
 
     // instantiate the graph
-    auto *graph = new GraphAlgorithm<MyImpl>(num_vertices,num_edges);  
+    auto *graph = new GraphAlgorithm<CSR>(num_vertices,num_edges);  
 
     // populate the graph and measure time
     auto begin_populate = std::chrono::high_resolution_clock::now();
@@ -101,6 +99,11 @@ int main(int argc, char **argv) {
     else
         std::cout << resident_set_size/1024 << ",";
 
+    if(debug) graph->print();
+
+    
+    /* TODO
+    
     double result = -1;
     
     // execute bfs and measure time
@@ -133,7 +136,7 @@ int main(int argc, char **argv) {
     }
     // write results of the BFS
     graph->write_results(graphName + ".dfs");
-    if(debug) std::cout << "DFS results written in " << graphName + ".dfs" << std::endl << std::endl;
+    if(debug) std::cout << "DFS results written in " << graphName + ".dfs" << std::endl << std::endl; */
 
     // free memory
     delete graph;
