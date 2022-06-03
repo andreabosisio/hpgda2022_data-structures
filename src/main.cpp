@@ -101,7 +101,7 @@ int main(int argc, char **argv) {
 
     //if(debug) print_edge_list(edges, num_edges);    
 
-    //if(debug) graph->print();
+    // if(debug) graph->print();
 
     
     /* TODO

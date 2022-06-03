@@ -63,7 +63,7 @@ public:
     CSR(uint64_t num_vertices, uint64_t num_edges) : num_vertices(num_vertices), num_edges(num_edges){
         col_idx = new uint64_t[num_edges + 2];
         values = new double[num_edges + 2];
-        row_ptr = new uint64_t[num_vertices + 2];
+        row_ptr = new uint64_t[num_vertices + 2](); // initializes all pointers to 0
     }
 
     ~CSR(){
