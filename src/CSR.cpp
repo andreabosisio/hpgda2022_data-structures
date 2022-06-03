@@ -26,7 +26,7 @@ void CSR::populate(std::tuple<uint64_t, uint64_t, double>* e_list){
     std::tuple<uint64_t, uint64_t, double> curr_edge;
     uint64_t curr_vertex;
     uint64_t new_pos;
-    for (uint64_t i = num_edges - 1; i < UINT64_MAX; i--) {
+    for (uint64_t i = num_edges - 1; i < UINT64_MAX; i--) { // at the end i = UINT64_MAX
         curr_edge = e_list[i];
         curr_vertex = std::get<0>(curr_edge);
         new_pos = count[curr_vertex] - 1;
@@ -36,6 +36,7 @@ void CSR::populate(std::tuple<uint64_t, uint64_t, double>* e_list){
         count[curr_vertex]--;
     }
 
+    delete[] count;
     finished();
 }
 
