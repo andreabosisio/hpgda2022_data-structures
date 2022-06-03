@@ -73,15 +73,15 @@ std::set<uint64_t> load_graph(std::string filename, bool undirected, std::tuple<
     return nodes;
 }
 
-void print_graph_info(uint64_t v, uint64_t e, bool undirected){
+void print_graph_info(uint64_t num_vertices, uint64_t num_edges, bool undirected){
     std::string prop = (undirected) ? "Undirected" : "Directed";
     std::cout << prop << " graph" << std::endl;
-    std::cout << "num nodes: " << v << std::endl;
-    std::cout << "num directed edges: " << e << std::endl << std::endl;
+    std::cout << "num nodes: " << num_vertices << std::endl;
+    std::cout << "num directed edges: " << num_edges << std::endl << std::endl;
 }
 
-void print_edge_list(std::tuple<uint64_t, uint64_t, double>* edges, uint64_t e){
-    for(uint64_t j = 0; j < e; j++)
+void print_edge_list(std::tuple<uint64_t, uint64_t, double>* edges, uint64_t num_edges){
+    for(uint64_t j = 0; j < num_edges; j++)
         std::cout << std::get<0>(edges[j]) << " " << std::get<1>(edges[j]) << " " << std::get<2>(edges[j]) << std::endl;
     std::cout << std::endl;
 }

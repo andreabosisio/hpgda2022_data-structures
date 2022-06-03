@@ -50,8 +50,8 @@ class CSR{
     std::list<uint64_t>* edges;
     std::list<double>* weights;
 
-    u_int64_t* col_idx;
-    u_int64_t* row_ptr;
+    uint64_t* col_idx;
+    uint64_t* row_ptr;
     double* values;
 
 public:
@@ -61,13 +61,9 @@ public:
     }
 
     CSR(uint64_t num_vertices, uint64_t num_edges) : num_vertices(num_vertices), num_edges(num_edges){
-
         col_idx = new uint64_t[num_edges + 2];
         values = new double[num_edges + 2];
         row_ptr = new uint64_t[num_vertices + 2];
-        
-        for(uint64_t i = 0; i <= num_vertices; ++i)
-            row_ptr[i] = 0;
     }
 
     ~CSR(){
