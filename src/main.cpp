@@ -101,10 +101,10 @@ int main(int argc, char **argv) {
 
     //if(debug) print_edge_list(edges, num_edges);    
 
-    if(debug) graph->print();
+    //if(debug) graph->print();
 
     
-    /* TODO
+    //TODO
     
     double result = -1;
     
@@ -138,7 +138,7 @@ int main(int argc, char **argv) {
     }
     // write results of the BFS
     graph->write_results(graphName + ".dfs");
-    if(debug) std::cout << "DFS results written in " << graphName + ".dfs" << std::endl << std::endl; */
+    if(debug) std::cout << "DFS results written in " << graphName + ".dfs" << std::endl << std::endl;
 
     // free memory
     delete graph;

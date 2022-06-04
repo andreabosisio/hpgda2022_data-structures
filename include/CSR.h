@@ -56,8 +56,19 @@ class CSR{
 
 public:
 
-    EdgeIter get_neighbors(int idx){
+/*     EdgeIter get_neighbors(int idx){
         return EdgeIter(begin(idx), end(idx), begin_weights(idx));
+    } */
+
+    std::vector<std::tuple<uint64_t, double>> get_neighbors(uint64_t idx) {
+        uint64_t num_neighbors = row_ptr[idx + 1] - row_ptr[idx];
+        std::vector<std::tuple<uint64_t, double>> neighbornsForIdx(num_neighbors);
+
+        uint64_t init_pos = row_ptr[idx];
+        for (int i = 0; i < num_neighbors; i++) {
+            neighbornsForIdx[i] = std::make_tuple(col_idx[init_pos + i], values[init_pos + i]);
+        }
+        return neighbornsForIdx;
     }
 
     CSR(uint64_t num_vertices, uint64_t num_edges) : num_vertices(num_vertices), num_edges(num_edges){

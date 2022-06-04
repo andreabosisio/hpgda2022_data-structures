@@ -14,15 +14,22 @@ void CSR::add_edge(int from, uint64_t to, double weight) {
 
 void CSR::populate(std::tuple<uint64_t, uint64_t, double>* e_list){
     // rearranged counting sort 
+
+    // building row_ptr vector
+    // count number of neighbors for each vertex
     uint64_t* count = new uint64_t[num_vertices](); // initializes all values to 0
     for (uint64_t i = 0; i < num_edges; i++)
         row_ptr[std::get<0>(e_list[i]) + 1]++;
 
+    // row_ptr[0] = 0
+    // cumulative sum
     for (uint64_t i = 1; i <= num_vertices; i++){  
         row_ptr[i] += row_ptr[i - 1];
         count[i - 1] = row_ptr[i];
     }  
+    row_ptr[num_vertices + 1] += row_ptr[num_vertices];
 
+    // sorting col_idx and values 
     std::tuple<uint64_t, uint64_t, double> curr_edge;
     uint64_t curr_vertex;
     uint64_t new_pos;
@@ -36,7 +43,7 @@ void CSR::populate(std::tuple<uint64_t, uint64_t, double>* e_list){
         count[curr_vertex]--;
     }
 
-    delete[] count;
+    delete[] count; //needed?
     finished();
 }
 

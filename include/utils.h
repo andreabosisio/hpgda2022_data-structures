@@ -62,7 +62,7 @@ std::set<uint64_t> load_graph(std::string filename, bool undirected, std::tuple<
     while (std::getline(eFile, line)){
         if (!line.empty()){
             tmp = split(line, ' ');
-            edges[i] = std::make_tuple(std::stoi(tmp[0]), std::stoi(tmp[1]), (weighted)?std::stof(tmp[2]):1);
+            edges[i] = std::make_tuple(std::stoi(tmp[0]), std::stoi(tmp[1]), (weighted)?std::stof(tmp[2]):1); //TO ASK: if unweighted, why we have to store all 1s?
             if (undirected) 
                 edges[num_edges/2+i] = std::make_tuple(std::stoi(tmp[1]), std::stoi(tmp[0]), (weighted)?std::stof(tmp[2]):1);
             nodes.insert(std::stoi(tmp[0]));

@@ -79,12 +79,12 @@ public:
         while (!q.empty()) {
             cur_vertex = q.front();
             q.pop();
-            for (auto& to : graph->get_neighbors(cur_vertex)) {
-                if (!used[to.first]) {
-                    used[to.first] = true;
-                    dist[to.first] = dist[cur_vertex] + 1;
-                    q.push(to.first);
-                    sum = sum + to.second;
+            for (auto const& [neighbor, weight] : graph->get_neighbors(cur_vertex)) {
+                if (!used[neighbor]) {
+                    used[neighbor] = true;
+                    dist[neighbor] = dist[cur_vertex] + 1;
+                    q.push(neighbor);
+                    sum = sum + weight;
                 }
             }
         }
@@ -96,11 +96,11 @@ public:
     double dfs_recursion(uint64_t cur_vertex) {
         double sum = 0;
         used[cur_vertex] = true;
-        for (auto& to : graph->get_neighbors(cur_vertex)) {
-            if (!used[to.first]) {
-                dist[to.first] = ++last;
-                sum += to.second;
-                sum += dfs_recursion(to.first);
+        for (auto const& [neighbor, weight] : graph->get_neighbors(cur_vertex)) {
+            if (!used[neighbor]) {
+                dist[neighbor] = ++last;
+                sum += weight;
+                sum += dfs_recursion(neighbor);
             }
         }
         return sum;
