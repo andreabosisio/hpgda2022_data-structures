@@ -70,7 +70,19 @@ std::set<uint64_t> load_graph(std::string filename, bool undirected, std::tuple<
             i++;
         }
     }
-    return nodes;
+    
+    // TO ASK
+    uint64_t max_vertex_idx = *nodes.rbegin(); // *nodes.rbegin() -> find the max
+    for(uint64_t i = 0; i < max_vertex_idx; i++) 
+        nodes.insert(i); 
+
+/*     uint64_t min_nodes_idx = *nodes.begin();
+    for(uint64_t i=0; i<num_edges; i++) {
+        std::get<0>(edges[i]) += - min_nodes_idx + 1;
+        std::get<1>(edges[i]) += - min_nodes_idx + 1;
+    } */
+
+    return nodes; // TO ASK: Why we need to return the nodes? Isn't sufficient to return the number of nodes?
 }
 
 void print_graph_info(uint64_t num_vertices, uint64_t num_edges, bool undirected){

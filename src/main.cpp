@@ -74,7 +74,7 @@ int main(int argc, char **argv) {
     if(debug) print_graph_info(num_vertices, num_edges, undirected);
 
     // print edges
-    //if(debug) print_edge_list(edges, num_edges);
+    // if(debug) print_edge_list(edges, num_edges);
 
     // get memory usage before instantiating and populating the graph
     process_mem_usage(vm_usage, resident_set_size, false);
@@ -98,10 +98,8 @@ int main(int argc, char **argv) {
         std::cout << "Graph size: " << resident_set_size/1024 << " MB" << std::endl << std::endl;
     else
         std::cout << resident_set_size/1024 << ",";
-
-    //if(debug) print_edge_list(edges, num_edges);    
-
-    //if(debug) graph->print();
+ 
+    if(debug) graph->print();
 
     
     //TODO

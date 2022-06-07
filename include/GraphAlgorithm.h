@@ -57,7 +57,7 @@ public:
 
     void write_results(std::string filename) {
         std::ofstream outfile(filename);
-        for (uint64_t i = 0; i <= num_vertices; i++){
+        for (uint64_t i = 0; i <= num_vertices; i++){ //TO ASK: why <= ?
             outfile << i << " " << dist[i] << std::endl; 
         }
     }
