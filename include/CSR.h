@@ -6,16 +6,22 @@
 #include <vector>
 #include <functional>
 
+#include <iterator>
+#include <array>
+
 // Compressed Sparse Row (CSR) implementation of Graph
-class CSR{
+class CSR
+{
+    class EdgeIter
+    {
 
-    class EdgeIter {
-        
-        class iterator {
+        class iterator
+        {
         public:
-            iterator(std::list<uint64_t>::iterator ptr, std::list<double>::iterator begin_w_ptr) : ptr(ptr), begin_w_ptr(begin_w_ptr) {}
+            iterator(uint64_t *ptr, double *begin_w_ptr) : ptr(ptr), begin_w_ptr(begin_w_ptr) {}
 
-            iterator operator++() {
+            iterator operator++()
+            {
                 ++ptr;
                 ++begin_w_ptr;
                 return *this;
@@ -23,69 +29,77 @@ class CSR{
 
             bool operator!=(const iterator &other) { return ptr != other.ptr; }
 
-            const std::pair<uint64_t, double> &operator*() {
+            const std::pair<uint64_t, double> &operator*()
+            {
                 current.first = *ptr;
                 current.second = *begin_w_ptr;
                 return current;
             };
 
         private:
-            std::list<uint64_t>::iterator ptr;
-            std::list<double>::iterator begin_w_ptr;
+            uint64_t *ptr;
+            double *begin_w_ptr;
             std::pair<uint64_t, double> current;
         };
 
     private:
-        std::list<uint64_t>::iterator begin_ptr, end_ptr;
-        std::list<double>::iterator begin_w_ptr;
+        uint64_t *begin_ptr;
+        uint64_t *end_ptr;
+        double *begin_w_ptr;
+
     public:
-        EdgeIter(std::list<uint64_t>::iterator begin_ptr, std::list<uint64_t>::iterator end_ptr, std::list<double>::iterator begin_w_ptr) : begin_ptr(begin_ptr), end_ptr(end_ptr), begin_w_ptr(begin_w_ptr) {}
+        EdgeIter(uint64_t *begin_ptr, uint64_t *end_ptr, double *begin_w_ptr) : begin_ptr(begin_ptr), end_ptr(end_ptr), begin_w_ptr(begin_w_ptr) {}
 
         iterator begin() const { return iterator(begin_ptr, begin_w_ptr); }
 
         iterator end() const { return iterator(end_ptr, begin_w_ptr); }
     };
-
+    /*
+    std::list<uint64_t> *edges;
+    std::list<double> *weights;
+    */
     uint64_t num_vertices, num_edges;
-    std::list<uint64_t>* edges;
-    std::list<double>* weights;
-
-    uint64_t* col_idx;
-    uint64_t* row_ptr;
-    double* values;
+    uint64_t *col_idx;
+    uint64_t *row_ptr;
+    double *values;
 
 public:
-
-/*     EdgeIter get_neighbors(int idx){
-        return EdgeIter(begin(idx), end(idx), begin_weights(idx));
-    } */
-
-    std::vector<std::tuple<uint64_t, double>> get_neighbors(uint64_t idx) {
-        uint64_t num_neighbors = row_ptr[idx + 1] - row_ptr[idx];
-        std::vector<std::tuple<uint64_t, double>> neighbornsForIdx(num_neighbors);
-
-        uint64_t init_pos = row_ptr[idx];
-        for (int i = 0; i < num_neighbors; i++) {
-            neighbornsForIdx[i] = std::make_tuple(col_idx[init_pos + i], values[init_pos + i]);
-        }
-        return neighbornsForIdx;
+    EdgeIter get_neighbors(int idx)
+    {
+        return EdgeIter(&col_idx[row_ptr[idx]], &col_idx[row_ptr[idx + 1]], &values[row_ptr[idx]]);
     }
+    /*
+        std::vector<std::tuple<uint64_t, double>> get_neighbors(uint64_t idx)
+        {
+            uint64_t num_neighbors = row_ptr[idx + 1] - row_ptr[idx];
+            std::vector<std::tuple<uint64_t, double>> neighbornsForIdx(num_neighbors);
 
-    CSR(uint64_t num_vertices, uint64_t num_edges) : num_vertices(num_vertices), num_edges(num_edges){
+            uint64_t init_pos = row_ptr[idx];
+            for (int i = 0; i < num_neighbors; i++)
+            {
+                neighbornsForIdx[i] = std::make_tuple(col_idx[init_pos + i], values[init_pos + i]);
+            }
+            return neighbornsForIdx;
+        }
+        */
+
+    CSR(uint64_t num_vertices, uint64_t num_edges) : num_vertices(num_vertices), num_edges(num_edges)
+    {
         col_idx = new uint64_t[num_edges + 2];
         values = new double[num_edges + 2];
         row_ptr = new uint64_t[num_vertices + 2](); // initializes all pointers to 0
     }
 
-    ~CSR(){
+    ~CSR()
+    {
         delete[] col_idx;
         delete[] values;
-        delete[] row_ptr;    
+        delete[] row_ptr;
 
-        //std::cout<<"AdjacencyList delete"<<std::endl;
+        // std::cout<<"AdjacencyList delete"<<std::endl;
     }
 
-    void add_edges(int from, std::vector<uint64_t>& to, std::vector<double>& w);
+    void add_edges(int from, std::vector<uint64_t> &to, std::vector<double> &w);
 
     void add_edge(int from, uint64_t to, double weight = 0);
 
@@ -93,23 +107,9 @@ public:
 
     void finished();
 
-    void populate(std::tuple<uint64_t, uint64_t, double>* e_list);
+    void populate(std::tuple<uint64_t, uint64_t, double> *e_list);
 
     void print();
-
-    inline std::list<uint64_t>::iterator begin(int cur_vertex) {
-        return edges[cur_vertex].begin();
-    }
-
-    inline std::list<uint64_t>::iterator end(int cur_vertex){
-        return edges[cur_vertex].end();
-    }
-
-    inline std::list<double>::iterator begin_weights(int cur_vertex) {
-        return weights[cur_vertex].begin();
-    }
-    
 };
 
-
-#endif //ORACLE_CONTEST_CSR_H
+#endif // ORACLE_CONTEST_CSR_H
