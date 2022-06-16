@@ -68,9 +68,9 @@ public:
     {
         std::ofstream outfile(filename);
         for (uint64_t i = 0; i < v; i++)
-        {
-            outfile << i << " <-> " << nodes.right.at(i) << " : " << dist[i] << std::endl;
-            // std::cout << i << " <-> " << nodes.right.at(i) << " : " << dist[i] << std::endl;
+        {   
+            outfile << nodes.right.at(i) << " " << dist[i] << std::endl;
+            // outfile << i << " <-> " << nodes.right.at(i) << " : " << dist[i] << std::endl;
         }
     }
 
