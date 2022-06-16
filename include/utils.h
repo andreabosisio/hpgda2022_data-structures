@@ -57,12 +57,9 @@ boost::bimap<uint64_t, uint64_t> load_graph(std::string filename, bool undirecte
     if (tmp.size() == 3)
         weighted = true;
 
-    uint64_t i = 0;
-
     // TODO make it faster
     std::vector<uint64_t> nodes;
     boost::bimap<uint64_t, uint64_t> nodes_bimap;
-    uint64_t last_mapped_node_idx = 0;
 
     // TODO forse si può fare senza il vettore di supporto nodes e usare direttamente la mappa ... 
     while (std::getline(vFile, line)) {
@@ -80,6 +77,7 @@ boost::bimap<uint64_t, uint64_t> load_graph(std::string filename, bool undirecte
 
     uint64_t tmp_from, tmp_to;
     double tmp_weight;
+    uint64_t i = 0;
     while (std::getline(eFile, line)) {
         if (!line.empty()) {
             tmp = split(line, ' ');
