@@ -41,6 +41,7 @@ std::vector<std::string> split(const std::string &s, char delim){
 // HINT: exploit num_edges or just skip count_lines and use directly this function (maybe better first option).
 boost::bimap<uint64_t, uint64_t> load_graph(std::string filename, bool undirected, std::tuple<uint64_t, uint64_t, double>* edges, uint64_t num_edges){
     std::ifstream eFile(filename+".e");
+    std::ifstream vFile(filename+".v");
     std::string line;    
     std::vector<std::string> tmp;
 
@@ -59,26 +60,34 @@ boost::bimap<uint64_t, uint64_t> load_graph(std::string filename, bool undirecte
     uint64_t i = 0;
 
     // TODO make it faster
+    std::vector<uint64_t> nodes;
     boost::bimap<uint64_t, uint64_t> nodes_bimap;
     uint64_t last_mapped_node_idx = 0;
 
+    // TODO forse si può fare senza il vettore di supporto nodes e usare direttamente la mappa ... 
+    while (std::getline(vFile, line)) {
+        if (!line.empty()) {
+            nodes.push_back(std::stoul(line));
+        } 
+    }
+    std::sort(nodes.begin(), nodes.end());
+
+    uint64_t new_idx = 0;
+    for (uint64_t node : nodes) {
+        nodes_bimap.insert({node, new_idx});
+        new_idx++;
+    }
+
     uint64_t tmp_from, tmp_to;
     double tmp_weight;
-    while (std::getline(eFile, line)){
-        if (!line.empty()){
+    while (std::getline(eFile, line)) {
+        if (!line.empty()) {
             tmp = split(line, ' ');
 
             tmp_from = std::stoul(tmp[0]);
             tmp_to = std::stoul(tmp[1]);
             tmp_weight = (weighted)?std::stof(tmp[2]):1; 
 
-            if ( nodes_bimap.insert( {tmp_from, last_mapped_node_idx} ).second ) { // If there is a new node 
-                last_mapped_node_idx++;
-            }
-
-            if ( nodes_bimap.insert( {tmp_to, last_mapped_node_idx} ).second ) { // If there is a new node 
-                last_mapped_node_idx++;
-            }
             edges[i] = std::make_tuple(nodes_bimap.left.at(tmp_from), nodes_bimap.left.at(tmp_to), tmp_weight);
 
             if (undirected) 
