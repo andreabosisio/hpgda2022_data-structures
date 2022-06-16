@@ -1,5 +1,5 @@
 CXX=g++
-FLAGS = -O2 -std=c++11
+FLAGS = -O2 -std=c++11 -lboost_system
 
 BIN_FOLDER=bin
 SRC_FOLDER=src
