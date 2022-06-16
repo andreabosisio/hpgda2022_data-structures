@@ -6,6 +6,7 @@
 #include <string>
 #include <sstream> 
 #include <vector>
+#include <boost/bimap.hpp>
 #include <set>
 #include <chrono>
 #include <algorithm>
@@ -38,11 +39,10 @@ std::vector<std::string> split(const std::string &s, char delim){
 // load the graph
 
 // HINT: exploit num_edges or just skip count_lines and use directly this function (maybe better first option).
-std::set<uint64_t> load_graph(std::string filename, bool undirected, std::tuple<uint64_t, uint64_t, double>* edges, uint64_t num_edges){
+boost::bimap<uint64_t, uint64_t> load_graph(std::string filename, bool undirected, std::tuple<uint64_t, uint64_t, double>* edges, uint64_t num_edges){
     std::ifstream eFile(filename+".e");
-    std::string line;
-    std::vector<std::string> tmp;    
-    std::set<uint64_t> nodes;
+    std::string line;    
+    std::vector<std::string> tmp;
 
     while (std::getline(eFile, line)){
         if (!line.empty()){
@@ -59,22 +59,40 @@ std::set<uint64_t> load_graph(std::string filename, bool undirected, std::tuple<
     uint64_t i = 0;
 
     // TODO make it faster
+    boost::bimap<uint64_t, uint64_t> nodes_bimap;
+    uint64_t last_mapped_node_idx = 0;
+
+    uint64_t tmp_from, tmp_to;
+    double tmp_weight;
     while (std::getline(eFile, line)){
         if (!line.empty()){
             tmp = split(line, ' ');
-            edges[i] = std::make_tuple(std::stoul(tmp[0]), std::stoul(tmp[1]), (weighted)?std::stof(tmp[2]):1);
+
+            tmp_from = std::stoul(tmp[0]);
+            tmp_to = std::stoul(tmp[1]);
+            tmp_weight = (weighted)?std::stof(tmp[2]):1; 
+
+            if ( nodes_bimap.insert( {tmp_from, last_mapped_node_idx} ).second ) { // If there is a new node 
+                last_mapped_node_idx++;
+            }
+
+            if ( nodes_bimap.insert( {tmp_to, last_mapped_node_idx} ).second ) { // If there is a new node 
+                last_mapped_node_idx++;
+            }
+            edges[i] = std::make_tuple(nodes_bimap.left.at(tmp_from), nodes_bimap.left.at(tmp_to), tmp_weight);
+
             if (undirected) 
-                edges[num_edges/2+i] = std::make_tuple(std::stoul(tmp[1]), std::stoul(tmp[0]), (weighted)?std::stof(tmp[2]):1);
-            nodes.insert(std::stoul(tmp[0]));
-            nodes.insert(std::stoul(tmp[1]));
+                edges[num_edges/2+i] = std::make_tuple(nodes_bimap.left.at(tmp_to), nodes_bimap.left.at(tmp_from), tmp_weight);
             i++;
         }
     }
     
     // TO ASK
+    /* 
     uint64_t max_vertex_idx = *nodes.rbegin(); // *nodes.rbegin() -> find the max
     for(uint64_t i = 0; i < max_vertex_idx; i++) 
         nodes.insert(i); 
+    */    
 
 /*     uint64_t min_nodes_idx = *nodes.begin();
     for(uint64_t i=0; i<num_edges; i++) {
@@ -82,7 +100,7 @@ std::set<uint64_t> load_graph(std::string filename, bool undirected, std::tuple<
         std::get<1>(edges[i]) += - min_nodes_idx + 1;
     } */
 
-    return nodes; // TO ASK: Why we need to return the nodes? Isn't sufficient to return the number of nodes?
+    return nodes_bimap; // TO ASK: Why we need to return the nodes? Isn't sufficient to return the number of nodes?
 }
 
 void print_graph_info(uint64_t num_vertices, uint64_t num_edges, bool undirected){

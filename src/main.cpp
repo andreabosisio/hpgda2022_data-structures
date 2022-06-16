@@ -63,7 +63,7 @@ int main(int argc, char **argv)
 
     // temporary data structs for nodes and edges
     std::tuple<uint64_t, uint64_t, double> *edges = new std::tuple<uint64_t, uint64_t, double>[num_edges];
-    std::set<uint64_t> nodes;
+    boost::bimap<uint64_t, uint64_t> nodes;
 
     // read nodes and edges
     if (debug)
@@ -126,7 +126,7 @@ int main(int argc, char **argv)
 
         // execute bfs and measure time
         auto begin_bfs = std::chrono::high_resolution_clock::now();
-        result = graph->bfs(src_vertex);
+        result = graph->bfs(nodes.left.at(src_vertex));
         auto end_bfs = std::chrono::high_resolution_clock::now();
         auto elapsed_bfs = std::chrono::duration_cast<std::chrono::milliseconds>(end_bfs - begin_bfs);
         if (debug)
@@ -142,7 +142,7 @@ int main(int argc, char **argv)
         // write results of the BFS (just at the 1st iteration)
         if (i == 0)
         {
-            graph->write_results(graphName + ".bfs");
+            graph->write_results(nodes, graphName + ".bfs");
             if (debug)
             {
                 std::cout << "Writing BFS results..." << std::endl;
@@ -152,7 +152,7 @@ int main(int argc, char **argv)
         }
         // execute dfs and measure time
         auto begin_dfs = std::chrono::high_resolution_clock::now();
-        result = graph->dfs(src_vertex);
+        result = graph->dfs(nodes.left.at(src_vertex));
         auto end_dfs = std::chrono::high_resolution_clock::now();
         auto elapsed_dfs = std::chrono::duration_cast<std::chrono::milliseconds>(end_dfs - begin_dfs);
         if (debug)
@@ -168,7 +168,7 @@ int main(int argc, char **argv)
         // write results of the DFS (just at the 1st iteration)
         if (i == 0)
         {
-            graph->write_results(graphName + ".dfs");
+            graph->write_results(nodes, graphName + ".dfs");
             if (debug)
             {
                 std::cout << "Writing DFS results..." << std::endl;
