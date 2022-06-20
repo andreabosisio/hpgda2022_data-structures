@@ -67,6 +67,7 @@ boost::bimap<uint64_t, uint64_t> load_graph(std::string filename, bool undirecte
             nodes.push_back(std::stoul(line));
         } 
     }
+    
     std::sort(nodes.begin(), nodes.end());
 
     uint64_t new_idx = 0;
