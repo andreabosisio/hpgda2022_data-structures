@@ -3,54 +3,17 @@
 #include <omp.h>
 #include <chrono>
 
-/*
-void CSR::add_edges(int from, std::vector<uint64_t> &to, std::vector<double> &w)
-{
-    for (uint64_t i : to)
-        edges[from].push_back(i);
-    for (double i : w)
-        weights[from].push_back(i);
-}
 
-void CSR::add_edge(int from, uint64_t to, double weight)
-{
-    edges[from].push_back(to);
-    weights[from].push_back(weight);
-}
-*/
+void CSR::add_edges(int from, std::vector<uint64_t> &to, std::vector<double> &w) {}
+
+void CSR::add_edge(int from, uint64_t to, double weight) {}
+
 void CSR::populate(std::tuple<uint64_t, uint64_t, double> *e_list)
 {
     // rearranged counting sort
 
-    // building row_ptr vector
-    // count number of neighbors for each vertex
+    // counting neighbors for each vertex
     uint64_t *count = new uint64_t[num_vertices];
-/*
-    int n_threads;
-    uint64_t row_ptr_private[num_vertices+2] = { 0 };
-    #pragma omp parallel private(row_ptr_private)
-    {   
-        if(omp_get_thread_num() == 0) {
-            n_threads = omp_get_num_threads();
-            printf("num threads: %d \n", n_threads);
-        }
-        #pragma omp for 
-        for (uint64_t i = 0; i < num_edges; i++) 
-        {       
-            printf("thread %d is managing index %llu : curr_vertex is %llu  \n", omp_get_thread_num(), i, std::get<0>(e_list[i]));
-            row_ptr_private[std::get<0>(e_list[i]) + 1]++;
-            printf("thread %d is managing index %llu :  curr_vertex is %llu incremented: count %llu \n", omp_get_thread_num(), i, std::get<0>(e_list[i]), row_ptr_private[std::get<0>(e_list[i]) + 1]);
-        }
-        #pragma omp for
-        for (uint64_t i = 1; i < num_vertices + 2; i++)
-        {   
-            printf("thread %d is managing index %llu : adding %llu to %llu \n", omp_get_thread_num(), i, row_ptr_private[i], row_ptr[i]);
-            #pragma omp atomic
-            row_ptr[i] += row_ptr_private[i];
-        }
-
-    }
-*/
     uint64_t *row_ptr_private;
     #pragma omp parallel
     {
@@ -77,9 +40,6 @@ void CSR::populate(std::tuple<uint64_t, uint64_t, double> *e_list)
     
     delete[] row_ptr_private;
 
-    // row_ptr[0] = 0
-    // cumulative sum
-
      // SERIAL SECOND FOR
 /*
     //#pragma omp for // OMP
@@ -93,27 +53,23 @@ void CSR::populate(std::tuple<uint64_t, uint64_t, double> *e_list)
 
     // PARALLEL SECOND FOR 
    
-    auto begin_cumulative = std::chrono::high_resolution_clock::now();
-
+    // cumulative sum
+    // row_ptr[0] = 0
     std::partial_sum(row_ptr, row_ptr + (num_vertices+2), row_ptr);
-
+/*
+    // copying row_ptr into count which will be used for the counting sort
     #pragma omp parallel for
     for(uint64_t i = 1; i <= num_vertices; i++)
     {
         count[i - 1] = row_ptr[i];
     } 
-
-    auto end_cumulative = std::chrono::high_resolution_clock::now(); 
-    auto elapsed_cumulative = std::chrono::duration_cast<std::chrono::milliseconds>(end_cumulative - begin_cumulative);
-    //std::cout << "cumulative sum time: " << elapsed_cumulative.count() << std::endl;
-
-
-    // sorting col_idx and weights
+*/
+    // counting sort: sorting col_idx and weights
 
     // PARALLEL LAST FOR 
-
+    // copying row_ptr into count which will be used for the counting sort and setting the locks for the count vector
     omp_lock_t count_locks[num_vertices];
-    double start_time = omp_get_wtime();
+    // double start_time = omp_get_wtime();
     #pragma omp parallel for 
     for (uint64_t i = 0; i < num_vertices; i++)
     {   
@@ -127,14 +83,17 @@ void CSR::populate(std::tuple<uint64_t, uint64_t, double> *e_list)
         uint64_t curr_vertex;
         uint64_t new_pos;
 
-        #pragma omp for ordered
+        #pragma omp for 
         for (uint64_t i = 0; i < num_edges; i++) // at the end i = UINT64_MAX
         {      
             //printf("thread %d is managing index %llu -> curr_vertex %llu \n", omp_get_thread_num(), i, std::get<0>(e_list[i]));
-
+            //#pragma omp ordered
+            //{
             curr_edge = e_list[i];
+            //}
             curr_vertex = std::get<0>(curr_edge);
             
+            // locking curr_vertex
             omp_set_lock(&count_locks[curr_vertex]); 
               
             new_pos = count[curr_vertex] - 1;
@@ -142,6 +101,7 @@ void CSR::populate(std::tuple<uint64_t, uint64_t, double> *e_list)
             //printf("thread %d is managing index %llu -> LOCK curr_vertex %llu ::: NEW POS: %llu \n", omp_get_thread_num(), i, std::get<0>(e_list[i]), new_pos);
             
             //printf("thread %d is managing index %llu -> RELEASING LOCK curr_vertex %llu \n", omp_get_thread_num(), i, std::get<0>(e_list[i]));
+            // unlocking curr_vertex
             omp_unset_lock(&count_locks[curr_vertex]);
 
             col_idx[new_pos] = std::get<1>(curr_edge);
@@ -149,12 +109,13 @@ void CSR::populate(std::tuple<uint64_t, uint64_t, double> *e_list)
         }
     }
 
+    // destroying locks
     #pragma omp parallel for 
     for (uint64_t i = 0; i < num_vertices; i++)
     {
         omp_destroy_lock(&count_locks[i]);
     }
-    double time = omp_get_wtime() - start_time;
+    // double time = omp_get_wtime() - start_time;
     //std::cout << "insertion time: " << time << std::endl;
 
 /*
@@ -185,17 +146,14 @@ void CSR::populate(std::tuple<uint64_t, uint64_t, double> *e_list)
     auto elapsed_insertion = std::chrono::duration_cast<std::chrono::milliseconds>(end_insertion - begin_insertion);
     std::cout << "insertion time: " << elapsed_insertion.count() << std::endl; 
 */
-    delete[] count; // needed?
+    delete[] count; 
 
     finished();
 }
-/*
-void CSR::sortEdgesByNodeId()
-{
-    for (uint64_t i = 0; i <= num_vertices; ++i)
-        edges[i].sort();
-}
-*/
+
+
+void CSR::sortEdgesByNodeId() {}
+
 void CSR::finished() {}
 
 void CSR::print()
