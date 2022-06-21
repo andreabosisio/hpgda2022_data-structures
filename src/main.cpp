@@ -4,7 +4,6 @@
 #include <fstream>
 #include <ostream>
 #include <string>
-#include <omp.h>
 
 int main(int argc, char **argv)
 {
@@ -65,6 +64,7 @@ int main(int argc, char **argv)
     // temporary data structs for nodes and edges
     std::tuple<uint64_t, uint64_t, double> *edges = new std::tuple<uint64_t, uint64_t, double>[num_edges];
     boost::bimap<uint64_t, uint64_t> nodes;
+
     // read nodes and edges
     if (debug)
         std::cout << "Loading the graph " << graphName << std::endl;
@@ -72,6 +72,7 @@ int main(int argc, char **argv)
     if (debug)
         std::cout << "Graph loaded!" << std::endl
                   << std::endl;
+
     // get increment in memory usage after loading the graph
     process_mem_usage(vm_usage, resident_set_size, true);
     if (debug)
@@ -120,7 +121,7 @@ int main(int argc, char **argv)
                       << std::endl;
         else
             std::cout << rss_tmp / 1024 << ",";
-        // if (debug) graph->print();
+        //if (debug) graph->print();
         double result = -1;
 
         // execute bfs and measure time
@@ -140,8 +141,10 @@ int main(int argc, char **argv)
         }
         // write results of the BFS (just at the 1st iteration)
         if (i == 0)
-        {
+        {   
             graph->write_results(nodes, graphName + ".bfs");
+            //graph->write_results(nodes, graphName + "Ordered" + ".bfs");
+            //graph->write_results(nodes, graphName + std::to_string(i) + ".bfs");
             if (debug)
             {
                 std::cout << "Writing BFS results..." << std::endl;
@@ -166,8 +169,10 @@ int main(int argc, char **argv)
         }
         // write results of the DFS (just at the 1st iteration)
         if (i == 0)
-        {
+        {   
             graph->write_results(nodes, graphName + ".dfs");
+            //graph->write_results(nodes, graphName + "Ordered" + ".dfs");
+            //graph->write_results(nodes, graphName + std::to_string(i) + ".dfs");
             if (debug)
             {
                 std::cout << "Writing DFS results..." << std::endl;
@@ -175,7 +180,6 @@ int main(int argc, char **argv)
                           << std::endl;
             }
         }
-        // print_edge_list(edges, num_edges);
         // free memory
         delete graph;
     }

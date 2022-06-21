@@ -5,7 +5,7 @@
             "type": "cppdbg",
             "request": "launch",
             "program": "${workspaceFolder}/bin/exe",
-            "args": ["data/example_undirected", "2", "-U", "-d"],
+            "args": ["data/example_undirected", "2", "1", "-U", "-d"],
             "stopAtEntry": false,
             "cwd": "${workspaceFolder}",
             "customLaunchSetupCommands": [

@@ -65,7 +65,7 @@ class CSR
 
 public:
     EdgeIter get_neighbors(uint64_t idx)
-    {
+    {   
         uint64_t pos = row_ptr[idx];
         return EdgeIter(&col_idx[pos], &col_idx[row_ptr[idx + 1]], &weights[pos]);
     }
