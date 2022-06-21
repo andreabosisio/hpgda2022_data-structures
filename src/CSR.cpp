@@ -13,6 +13,8 @@ void CSR::populate(std::tuple<uint64_t, uint64_t, double> *e_list)
     // rearranged counting sort
 
     // counting neighbors for each vertex
+
+    // NO REDUCTION
     uint64_t *count = new uint64_t[num_vertices];
     uint64_t *row_ptr_private;
     #pragma omp parallel
@@ -23,22 +25,29 @@ void CSR::populate(std::tuple<uint64_t, uint64_t, double> *e_list)
         #pragma omp single 
         {
             row_ptr_private = new uint64_t[(num_vertices+2)*nthreads];
-            for(int i=0; i<((num_vertices+2)*nthreads); i++) row_ptr_private[i] = 0;
+            for(uint64_t i = 0; i < ((num_vertices+2) * nthreads); i++) row_ptr_private[i] = 0;
         }
         #pragma omp for
-        for (int n=0 ; n<num_edges ; ++n )
+        for (uint64_t n = 0 ; n < num_edges ; ++n )
         {   
-            row_ptr_private[ithread*(num_vertices+2) + (std::get<0>(e_list[n]) + 1)]++;
+            row_ptr_private[ithread * (num_vertices+2) + (std::get<0>(e_list[n]) + 1)]++;
         }
         #pragma omp for
-        for(int i=1; i<num_vertices+2; i++) {
-            for(int j=0; j<nthreads; j++) {
+        for(uint64_t i = 1; i < num_vertices+2; i++) {
+            for(int j = 0; j < nthreads; j++) {
                 row_ptr[i] += row_ptr_private[(num_vertices+2)*j + i];
             }
         }
     }
     
     delete[] row_ptr_private;
+/*
+    // REDUCTION  (to check)
+    #pragma omp parallel for reduction (+:row_ptr[:(num_vertices+2)])
+    for(uint64_t i = 0; i < num_edges; i++)
+        row_ptr[std::get<0>(e_list[i]) + 1]++;
+*/
+
 
      // SERIAL SECOND FOR
 /*
@@ -56,14 +65,7 @@ void CSR::populate(std::tuple<uint64_t, uint64_t, double> *e_list)
     // cumulative sum
     // row_ptr[0] = 0
     std::partial_sum(row_ptr, row_ptr + (num_vertices+2), row_ptr);
-/*
-    // copying row_ptr into count which will be used for the counting sort
-    #pragma omp parallel for
-    for(uint64_t i = 1; i <= num_vertices; i++)
-    {
-        count[i - 1] = row_ptr[i];
-    } 
-*/
+
     // counting sort: sorting col_idx and weights
 
     // PARALLEL LAST FOR 
