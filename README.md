@@ -16,22 +16,23 @@ For each graph, there is a folder containing 3 files:
 - *graph_name*`.e`: containing the set of edges;
 - *graph_name*`.properties`: summarizing the properties of the graph. It also provides the source vertex chosen by LDBC to ease the reproducibility and comparability of different implementations. In your experiments, you can use other source vertices, but we recommend including in your sets of tested vertices the ones reported in the `.properties` file.   
 
-### Data of graphs
 
 ## Methods
-We present a CSR data structure with the
-following methods:
-* populate, implemented by similarity with counting sort 
-* get_neighbors, implemented with an iteretor that return for each node all neighborns
+To store the graph we used a data structure based on Compressed Sparse Row (CSR) format. We implemented the following methods:
+* ```populate```, that, given an edge list, populate the CSR data structure 
+* ```get_neighbors```, implemented with an iteretor that, given a vertex, returns all the neigbors (with the corresponding weight) of that vertex
 
 ## Compile and run
+### Compile
+To compile the code just run ```make``` in the root folder.
+
+### Run
 ```src/main.cpp``` takes five positional arguments:
 1. *path to graph* (required);
 1. *source vertex* for BFS and DFS (required);
 1. *number of iterations* of graph population, BFS and DFS (required);
 1. `-U` if the graph is undirected (default is directed);
 1. `-d` for debugging mode (default is no debugging)
-To build the example, just run ```make``` in this folder.
 To run the example (3 iterations) on the ```example_directed``` graph, with source vertex 2:
 ``` 
 bin/exe data/example_directed 2 3 -d
@@ -57,21 +58,17 @@ bash runDota.sh
 ``` 
 bash runCit.sh
 ```
-
-### Parallelization - Problem
-To run the parallel form maybe you can get a segmentation fault. The reason is that you dont have enough space on the heap. So first of all run
+### Parallelization - Segmentation Fault Problem
+The  ```populate``` method runs in parallel: you may get a stack overflow due to the duplication of data in the stack of each thread. To avoid this problem you should increase the stack limit by running the following before executing the code:
 ``` 
 ulimit -s 90000
 ```
-and after ```make```
-
-## Result
-This result are releated to system: Intel Core i7-8550U with 1.8GHz clock speed, 4 cores. The machine had 8GB of RAM,
+## Results
+This results are releated to system: Intel Core i7-8550U with 1.8GHz clock speed, 4 cores. The machine has 8GB of RAM,
 256KB of L1 cache, 1M of L2 cache, and 8MB
 of L3 cache. Programs were written in c++ and
-compiled with GCC 9.4.0. and are compered with the basic implementation proposed in the course that provide a Adjacency List.
-
-| Rappresentation | Graph | Memory Usage (MB) | Populate Time (ms) | BFS Time (ms) | DFS Time (ms) | 
+compiled with GCC 9.4.0. and are compered with the basic implementation proposed in the course that uses an Adjacency List to store the graph.
+| Data structure | Graph | Memory Usage (MB) | Populate Time (ms) | BFS Time (ms) | DFS Time (ms) | 
 |---|---|---|---|---|---|
 | CSR | wiki-Talks | 9.3MB | 135ms | 142ms | 219ms |
 | CSR | cit-Patents | 72MB | 1789ms | 40ms | 35ms |
@@ -79,8 +76,6 @@ compiled with GCC 9.4.0. and are compered with the basic implementation proposed
 | AL | wiki-Talks | 455MB | 695ms | 767ms | 696ms |
 | AL | cit-Patents | 1182MB | 5443ms | 186ms | 188ms |
 | AL | dota-league | 3640MB | 8967ms | 197ms | 217ms |
-
-
 ## Libraries used
-- openMP 
-- BOOST
+- OpenMP 
+- Boost 
