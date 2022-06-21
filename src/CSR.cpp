@@ -1,26 +1,14 @@
 #include "../include/CSR.h"
 #include <omp.h>
 
-/*
-void CSR::add_edges(int from, std::vector<uint64_t> &to, std::vector<double> &w)
-{
-    for (uint64_t i : to)
-        edges[from].push_back(i);
-    for (double i : w)
-        weights[from].push_back(i);
-}
 
-void CSR::add_edge(int from, uint64_t to, double weight)
-{
-    edges[from].push_back(to);
-    weights[from].push_back(weight);
-}
-*/
+void CSR::add_edges(int from, std::vector<uint64_t> &to, std::vector<double> &w) {}
+
+void CSR::add_edge(int from, uint64_t to, double weight) {}
+
 void CSR::populate(std::tuple<uint64_t, uint64_t, double> *e_list)
 {
     // rearranged counting sort
-
-    // omp_set_num_threads(50); // OMP
 
     // building row_ptr vector
     // count number of neighbors for each vertex
@@ -31,7 +19,6 @@ void CSR::populate(std::tuple<uint64_t, uint64_t, double> *e_list)
     // row_ptr[0] = 0
     // cumulative sum
 
-    //#pragma omp for // OMP
     for (uint64_t i = 1; i <= num_vertices; i++)
     {
         row_ptr[i] += row_ptr[i - 1];
@@ -44,7 +31,6 @@ void CSR::populate(std::tuple<uint64_t, uint64_t, double> *e_list)
     uint64_t curr_vertex;
     uint64_t new_pos;
 
-    // #pragma omp for // OMP
     for (uint64_t i = num_edges - 1; i < UINT64_MAX; i--) // at the end i = UINT64_MAX
     { 
         curr_edge = e_list[i];
@@ -56,16 +42,12 @@ void CSR::populate(std::tuple<uint64_t, uint64_t, double> *e_list)
         count[curr_vertex]--;
     }
 
-    delete[] count; // needed?
+    delete[] count;
     finished();
 }
-/*
-void CSR::sortEdgesByNodeId()
-{
-    for (uint64_t i = 0; i <= num_vertices; ++i)
-        edges[i].sort();
-}
-*/
+
+void CSR::sortEdgesByNodeId() {}
+
 void CSR::finished() {}
 
 void CSR::print()
