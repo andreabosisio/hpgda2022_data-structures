@@ -69,7 +69,7 @@ ulimit -s 90000
 ```
 
 
-## Results
+## Results (UFFICIALI?)
 This results are releated to system: Intel Core i7-8550U with 1.8GHz clock speed, 4 cores. The machine has 8GB of RAM,
 256KB of L1 cache, 1M of L2 cache, and 8MB
 of L3 cache. Programs were written in c++ and
