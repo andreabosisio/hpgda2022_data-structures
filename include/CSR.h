@@ -59,8 +59,11 @@ class CSR
     std::list<double> *weights;
     */
     uint64_t num_vertices, num_edges;
-    uint64_t *col_idx;
+    
     uint64_t *row_ptr;
+    
+    // TODO MAKE TUPLE col_idx_weight
+    uint64_t *col_idx;
     double *weights;
 
 public:
