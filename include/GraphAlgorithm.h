@@ -63,14 +63,13 @@ public:
         graph->add_edge(from, to, weight);
     }
 
-    // TO ASK : adesso i nodi isolati non vengono considerati nella dist
     void write_results(boost::bimap<uint64_t, uint64_t> nodes, std::string filename)
     {
         std::ofstream outfile(filename);
         for (uint64_t i = 0; i < v; i++)
-        {   
+        {
             outfile << nodes.right.at(i) << " " << dist[i] << std::endl;
-            // outfile << i << " <-> " << nodes.right.at(i) << " : " << dist[i] << std::endl;
+            // outfile << i << " <-> " << nodes.right.at(i) << " : " << dist[i] << std::endl; // map version
         }
     }
 
@@ -93,7 +92,6 @@ public:
         {
             cur_vertex = q.front();
             q.pop();
-            // std::cout << cur_vertex << std::endl;
             for (auto &to : graph->get_neighbors(cur_vertex))
             {
                 if (!used[to.first])
@@ -136,6 +134,11 @@ public:
         last = 0;
         // recursion
         return dfs_recursion(cur_vertex);
+    }
+
+    void print()
+    {
+        graph->print();
     }
 };
 

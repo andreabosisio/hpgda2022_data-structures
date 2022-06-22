@@ -1,5 +1,5 @@
 #!/bin/bash
-
+ulimit -s 90000
 # Run 10 iterations on example_directed, with src vertex 2
 # Save results in results_directed.csv
 echo "Benchmarking example_directed graph (10 iterations)"

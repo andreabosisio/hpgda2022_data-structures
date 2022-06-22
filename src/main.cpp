@@ -121,7 +121,8 @@ int main(int argc, char **argv)
                       << std::endl;
         else
             std::cout << rss_tmp / 1024 << ",";
-        // if (debug) graph->print();
+        if (debug)
+            graph->print();
         double result = -1;
 
         // execute bfs and measure time
@@ -139,6 +140,7 @@ int main(int argc, char **argv)
         {
             std::cout << elapsed_bfs.count() << "," << result << ",";
         }
+
         // write results of the BFS (just at the 1st iteration)
         if (i == 0)
         {
@@ -150,6 +152,7 @@ int main(int argc, char **argv)
                           << std::endl;
             }
         }
+
         // execute dfs and measure time
         auto begin_dfs = std::chrono::high_resolution_clock::now();
         result = graph->dfs(nodes.left.at(src_vertex));
@@ -165,6 +168,7 @@ int main(int argc, char **argv)
         {
             std::cout << elapsed_dfs.count() << "," << result << std::endl;
         }
+
         // write results of the DFS (just at the 1st iteration)
         if (i == 0)
         {
@@ -176,6 +180,7 @@ int main(int argc, char **argv)
                           << std::endl;
             }
         }
+
         // free memory
         delete graph;
     }
