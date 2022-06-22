@@ -37,8 +37,6 @@ std::vector<std::string> split(const std::string &s, char delim){
 }
 
 // load the graph
-
-// HINT: exploit num_edges or just skip count_lines and use directly this function (maybe better first option).
 boost::bimap<uint64_t, uint64_t> load_graph(std::string filename, bool undirected, std::tuple<uint64_t, uint64_t, double>* edges, uint64_t num_edges){
     std::ifstream eFile(filename+".e");
     std::ifstream vFile(filename+".v");
@@ -61,7 +59,6 @@ boost::bimap<uint64_t, uint64_t> load_graph(std::string filename, bool undirecte
     std::vector<uint64_t> nodes;
     boost::bimap<uint64_t, uint64_t> nodes_bimap;
 
-    // TODO forse si può fare senza il vettore di supporto nodes e usare direttamente la mappa ... 
     while (std::getline(vFile, line)) {
         if (!line.empty()) {
             nodes.push_back(std::stoul(line));
@@ -98,20 +95,7 @@ boost::bimap<uint64_t, uint64_t> load_graph(std::string filename, bool undirecte
         }
     }
     
-    // TO ASK
-    /* 
-    uint64_t max_vertex_idx = *nodes.rbegin(); // *nodes.rbegin() -> find the max
-    for(uint64_t i = 0; i < max_vertex_idx; i++) 
-        nodes.insert(i); 
-    */    
-
-/*     uint64_t min_nodes_idx = *nodes.begin();
-    for(uint64_t i=0; i<num_edges; i++) {
-        std::get<0>(edges[i]) += - min_nodes_idx + 1;
-        std::get<1>(edges[i]) += - min_nodes_idx + 1;
-    } */
-
-    return nodes_bimap; // TO ASK: Why we need to return the nodes? Isn't sufficient to return the number of nodes?
+    return nodes_bimap; 
 }
 
 void print_graph_info(uint64_t num_vertices, uint64_t num_edges, bool undirected){

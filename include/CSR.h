@@ -2,13 +2,12 @@
 #define ORACLE_CONTEST_CSR_H
 
 #include <iostream>
-#include <list>
 #include <vector>
 #include <functional>
 #include <iterator>
 #include <array>
 
-// Compressed Sparse Row (CSR) implementation of Graph
+// Compressed Sparse Row (CSR) implementation 
 class CSR
 {
     class CSRIter
@@ -50,9 +49,10 @@ class CSR
     uint64_t num_vertices, num_edges;
     uint64_t *row_ptr;
     std::pair<uint64_t, double> *col_idx_weight;
-
+/*
 private:
     void sortNeighborsOf(uint64_t vertex_idx);   
+*/    
 
 public:
 
@@ -71,8 +71,6 @@ public:
     {
         delete[] col_idx_weight;
         delete[] row_ptr;
-
-        // std::cout<<"AdjacencyList delete"<<std::endl;
     }
 
     void add_edges(int from, std::vector<uint64_t> &to, std::vector<double> &w);

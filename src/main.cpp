@@ -125,13 +125,9 @@ int main(int argc, char **argv)
         if (debug) graph->print();
         double result = -1;
         
-
-        // TODO IMPLEMENT ITERATOR        
-
         // execute bfs and measure time
         auto begin_bfs = std::chrono::high_resolution_clock::now();
         result = graph->bfs(nodes.left.at(src_vertex));
-        //result = 0;
         auto end_bfs = std::chrono::high_resolution_clock::now();
         auto elapsed_bfs = std::chrono::duration_cast<std::chrono::milliseconds>(end_bfs - begin_bfs);
         if (debug)
@@ -144,12 +140,11 @@ int main(int argc, char **argv)
         {
             std::cout << elapsed_bfs.count() << "," << result << ",";
         }
+
         // write results of the BFS (just at the 1st iteration)
         if (i == 0)
         {   
             graph->write_results(nodes, graphName + ".bfs");
-            //graph->write_results(nodes, graphName + "Ordered" + ".bfs");
-            //graph->write_results(nodes, graphName + std::to_string(i) + ".bfs");
             if (debug)
             {
                 std::cout << "Writing BFS results..." << std::endl;
@@ -157,6 +152,7 @@ int main(int argc, char **argv)
                           << std::endl;
             }
         }
+
         // execute dfs and measure time
         auto begin_dfs = std::chrono::high_resolution_clock::now();
         result = graph->dfs(nodes.left.at(src_vertex));
@@ -172,12 +168,11 @@ int main(int argc, char **argv)
         {
             std::cout << elapsed_dfs.count() << "," << result << std::endl;
         }
+
         // write results of the DFS (just at the 1st iteration)
         if (i == 0)
         {   
             graph->write_results(nodes, graphName + ".dfs");
-            //graph->write_results(nodes, graphName + "Ordered" + ".dfs");
-            //graph->write_results(nodes, graphName + std::to_string(i) + ".dfs");
             if (debug)
             {
                 std::cout << "Writing DFS results..." << std::endl;
