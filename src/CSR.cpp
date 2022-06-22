@@ -2,6 +2,7 @@
 #include <numeric>
 #include <omp.h>
 #include <chrono>
+#include <algorithm>
 
 
 void CSR::add_edges(int from, std::vector<uint64_t> &to, std::vector<double> &w) {}
@@ -13,6 +14,7 @@ void CSR::populate(std::tuple<uint64_t, uint64_t, double> *e_list)
     // rearranged counting sort
 
     // counting neighbors for each vertex
+    
 
     // NO REDUCTION
     uint64_t *count = new uint64_t[num_vertices];
@@ -110,10 +112,12 @@ void CSR::populate(std::tuple<uint64_t, uint64_t, double> *e_list)
         }
     }
 
-    // destroying locks
+    // destroying locks and sorting neighbors (sorting col_idx_weight by its first element)
     #pragma omp parallel for 
     for (uint64_t i = 0; i < num_vertices; i++)
-    {
+    {      
+        //sortNeighborsOf(i); // sorting the neigbors of node i //TAKES TOO MUCH
+        std::sort(col_idx_weight + row_ptr[i], col_idx_weight + row_ptr[i+1]);
         omp_destroy_lock(&count_locks[i]);
     }
     // double time = omp_get_wtime() - start_time;
@@ -151,6 +155,27 @@ void CSR::populate(std::tuple<uint64_t, uint64_t, double> *e_list)
 
     finished();
 }
+/* // takes too much 
+void CSR::sortNeighborsOf(uint64_t vertex_idx)
+{
+    // insertion sort (works well with small arrays)
+    std::pair<uint64_t, double> temp;
+    uint64_t i, j;
+    uint64_t num_neighbors = row_ptr[vertex_idx + 1] - row_ptr[vertex_idx];
+    for (i = row_ptr[vertex_idx] + 1; i < row_ptr[vertex_idx + 1]; i++)
+    {
+        temp = col_idx_weight[i];
+        j = i - 1;
+
+        while (j >= row_ptr[vertex_idx] && col_idx_weight[j].first > temp.first)
+        {
+            col_idx_weight[j + 1] = col_idx_weight[j];
+            j = j - 1;
+        }
+        col_idx_weight[j + 1] = temp;
+    }
+}
+*/
 
 
 void CSR::sortEdgesByNodeId() {}

@@ -112,8 +112,7 @@ int main(int argc, char **argv)
         else
             std::cout << src_vertex << "," << elapsed_populate.count() << ",";
 
-    // TODO IMPLEMENT ITERATOR        
-/*
+
         //  get increment in memory usage after instantiating and populating the graph
         vm_tmp = vm_usage;
         rss_tmp = resident_set_size;
@@ -123,12 +122,16 @@ int main(int argc, char **argv)
                       << std::endl;
         else
             std::cout << rss_tmp / 1024 << ",";
-        //if (debug) graph->print();
+        if (debug) graph->print();
         double result = -1;
+        
+
+        // TODO IMPLEMENT ITERATOR        
 
         // execute bfs and measure time
         auto begin_bfs = std::chrono::high_resolution_clock::now();
-        result = graph->bfs(nodes.left.at(src_vertex));
+        //result = graph->bfs(nodes.left.at(src_vertex));
+        result = 0;
         auto end_bfs = std::chrono::high_resolution_clock::now();
         auto elapsed_bfs = std::chrono::duration_cast<std::chrono::milliseconds>(end_bfs - begin_bfs);
         if (debug)
@@ -156,7 +159,7 @@ int main(int argc, char **argv)
         }
         // execute dfs and measure time
         auto begin_dfs = std::chrono::high_resolution_clock::now();
-        result = graph->dfs(nodes.left.at(src_vertex));
+        //result = graph->dfs(nodes.left.at(src_vertex));
         auto end_dfs = std::chrono::high_resolution_clock::now();
         auto elapsed_dfs = std::chrono::duration_cast<std::chrono::milliseconds>(end_dfs - begin_dfs);
         if (debug)
@@ -182,7 +185,7 @@ int main(int argc, char **argv)
                           << std::endl;
             }
         }
-*/        
+     
         // free memory
         delete graph;
     }

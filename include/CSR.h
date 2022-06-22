@@ -58,6 +58,9 @@ class CSR
     uint64_t *row_ptr;
     std::pair<uint64_t, double> *col_idx_weight;
 
+private:
+    void sortNeighborsOf(uint64_t vertex_idx);   
+
 public:
 
     EdgeIter get_neighbors(uint64_t idx)
