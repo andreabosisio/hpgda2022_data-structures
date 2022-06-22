@@ -86,11 +86,14 @@ boost::bimap<uint64_t, uint64_t> load_graph(std::string filename, bool undirecte
             tmp_from = std::stoul(tmp[0]);
             tmp_to = std::stoul(tmp[1]);
             tmp_weight = (weighted)?std::stof(tmp[2]):1; 
-
+            
             edges[i] = std::make_tuple(nodes_bimap.left.at(tmp_from), nodes_bimap.left.at(tmp_to), tmp_weight);
+             
 
             if (undirected) 
+            {
                 edges[num_edges/2+i] = std::make_tuple(nodes_bimap.left.at(tmp_to), nodes_bimap.left.at(tmp_from), tmp_weight);
+            }
             i++;
         }
     }

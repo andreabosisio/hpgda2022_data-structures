@@ -130,8 +130,8 @@ int main(int argc, char **argv)
 
         // execute bfs and measure time
         auto begin_bfs = std::chrono::high_resolution_clock::now();
-        //result = graph->bfs(nodes.left.at(src_vertex));
-        result = 0;
+        result = graph->bfs(nodes.left.at(src_vertex));
+        //result = 0;
         auto end_bfs = std::chrono::high_resolution_clock::now();
         auto elapsed_bfs = std::chrono::duration_cast<std::chrono::milliseconds>(end_bfs - begin_bfs);
         if (debug)
@@ -159,7 +159,7 @@ int main(int argc, char **argv)
         }
         // execute dfs and measure time
         auto begin_dfs = std::chrono::high_resolution_clock::now();
-        //result = graph->dfs(nodes.left.at(src_vertex));
+        result = graph->dfs(nodes.left.at(src_vertex));
         auto end_dfs = std::chrono::high_resolution_clock::now();
         auto elapsed_dfs = std::chrono::duration_cast<std::chrono::milliseconds>(end_dfs - begin_dfs);
         if (debug)

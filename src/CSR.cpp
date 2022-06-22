@@ -43,6 +43,9 @@ void CSR::populate(std::tuple<uint64_t, uint64_t, double> *e_list)
     }
     
     delete[] row_ptr_private;
+
+    //CSR::print();
+
 /*
     // REDUCTION  (to check)
     #pragma omp parallel for reduction (+:row_ptr[:(num_vertices+2)])
@@ -112,6 +115,8 @@ void CSR::populate(std::tuple<uint64_t, uint64_t, double> *e_list)
         }
     }
 
+    //CSR::print();
+
     // destroying locks and sorting neighbors (sorting col_idx_weight by its first element)
     #pragma omp parallel for 
     for (uint64_t i = 0; i < num_vertices; i++)
@@ -122,6 +127,8 @@ void CSR::populate(std::tuple<uint64_t, uint64_t, double> *e_list)
     }
     // double time = omp_get_wtime() - start_time;
     //std::cout << "insertion time: " << time << std::endl;
+
+    //CSR::print();
 
 /*
    // SERIAL LAST FOR
