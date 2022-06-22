@@ -112,6 +112,8 @@ int main(int argc, char **argv)
         else
             std::cout << src_vertex << "," << elapsed_populate.count() << ",";
 
+    // TODO IMPLEMENT ITERATOR        
+/*
         //  get increment in memory usage after instantiating and populating the graph
         vm_tmp = vm_usage;
         rss_tmp = resident_set_size;
@@ -180,6 +182,7 @@ int main(int argc, char **argv)
                           << std::endl;
             }
         }
+*/        
         // free memory
         delete graph;
     }

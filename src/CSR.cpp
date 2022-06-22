@@ -106,8 +106,7 @@ void CSR::populate(std::tuple<uint64_t, uint64_t, double> *e_list)
             // unlocking curr_vertex
             omp_unset_lock(&count_locks[curr_vertex]);
 
-            col_idx[new_pos] = std::get<1>(curr_edge);
-            weights[new_pos] = std::get<2>(curr_edge);
+            col_idx_weight[new_pos] = std::make_pair(std::get<1>(curr_edge), std::get<2>(curr_edge));
         }
     }
 
@@ -167,12 +166,12 @@ void CSR::print()
 
     std::cout << "col_idx: { ";
     for (uint64_t i = 0; i < num_edges; i++)
-        std::cout << col_idx[i] << " ";
+        std::cout << col_idx_weight[i].first << " ";
     std::cout << "}" << std::endl;
 
     std::cout << "weights: { ";
     for (uint64_t i = 0; i < num_edges; i++)
-        std::cout << weights[i] << " ";
+        std::cout << col_idx_weight[i].second << " ";
     std::cout << "}" << std::endl;
     
 }

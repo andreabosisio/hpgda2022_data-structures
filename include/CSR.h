@@ -5,7 +5,6 @@
 #include <list>
 #include <vector>
 #include <functional>
-
 #include <iterator>
 #include <array>
 
@@ -54,21 +53,20 @@ class CSR
 
         iterator end() const { return iterator(end_ptr, begin_w_ptr); }
     };
-    /*
-    std::list<uint64_t> *edges;
-    std::list<double> *weights;
-    */
+
     uint64_t num_vertices, num_edges;
-    uint64_t *col_idx;
     uint64_t *row_ptr;
-    double *weights;
+    std::pair<uint64_t, double> *col_idx_weight;
 
 public:
+
     EdgeIter get_neighbors(uint64_t idx)
     {   
         uint64_t pos = row_ptr[idx];
-        return EdgeIter(&col_idx[pos], &col_idx[row_ptr[idx + 1]], &weights[pos]);
+        return EdgeIter(NULL, NULL, NULL); // TODO 
+        //return EdgeIter(&col_idx[pos], &col_idx[row_ptr[idx + 1]], &weights[pos]);
     }
+
     /*
         std::vector<std::tuple<uint64_t, double>> get_neighbors(uint64_t idx)
         {
@@ -82,19 +80,17 @@ public:
             }
             return neighbornsForIdx;
         }
-        */
+    */
 
     CSR(uint64_t num_vertices, uint64_t num_edges) : num_vertices(num_vertices), num_edges(num_edges)
-    {
-        col_idx = new uint64_t[num_edges + 2];
-        weights = new double[num_edges + 2];
+    {   
+        col_idx_weight = new std::pair<uint64_t, double>[num_edges + 2];
         row_ptr = new uint64_t[num_vertices + 2](); // initializes all pointers to 0
     }
 
     ~CSR()
     {
-        delete[] col_idx;
-        delete[] weights;
+        delete[] col_idx_weight;
         delete[] row_ptr;
 
         // std::cout<<"AdjacencyList delete"<<std::endl;
