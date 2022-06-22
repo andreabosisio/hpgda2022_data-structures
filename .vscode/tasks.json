@@ -12,6 +12,8 @@
                 "${fileDirname}/**.cpp",
                 "-o",
                 "${workspaceFolder}/bin/exe"
+                "-lboost_system" //, // OMP
+                // "-fopenmp" 
             ],
             "options": {
                 "cwd": "${fileDirname}"

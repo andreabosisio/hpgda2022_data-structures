@@ -59,11 +59,17 @@ bash runDota.sh
 bash runCit.sh
 ```
 ### Parallelization - Segmentation Fault Problem
-The  ```populate``` method runs in parallel: you may get a stack overflow due to the duplication of data in the stack of each thread. To avoid this problem you should increase the stack limit by running the following before executing the code:
+The  ```populate``` method runs in parallel: you may get a stack overflow due to the duplication of data in the stack of each thread. To avoid this problem you should increase the stack limit by running the following before executing the code (only for Unix systems):
+``` 
+ulimit -s unlimited
+```
+If it doesn't work try with 
 ``` 
 ulimit -s 90000
 ```
-## Results
+
+
+## Results (COMPUTE AGAIN)
 This results are releated to system: Intel Core i7-8550U with 1.8GHz clock speed, 4 cores. The machine has 8GB of RAM,
 256KB of L1 cache, 1M of L2 cache, and 8MB
 of L3 cache. Programs were written in c++ and
