@@ -121,8 +121,8 @@ int main(int argc, char **argv)
                       << std::endl;
         else
             std::cout << rss_tmp / 1024 << ",";
-        if (debug)
-            graph->print();
+        // if (debug)
+        // graph->print();
         double result = -1;
 
         // execute bfs and measure time
