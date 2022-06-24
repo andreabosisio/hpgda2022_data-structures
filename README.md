@@ -76,9 +76,9 @@ of L3 cache. Programs were written in c++ and
 compiled with GCC 9.4.0. and are compered with the basic implementation proposed in the course that uses an Adjacency List to store the graph.
 | Data structure | Graph | Memory Usage (MB) | Populate Time (ms) | BFS Time (ms) | DFS Time (ms) | 
 |---|---|---|---|---|---|
-| CSR | wiki-Talks | 9.3MB | 135ms | 142ms | 219ms |
-| CSR | cit-Patents | 72MB | 1789ms | 40ms | 35ms |
-| CSR | dota-league | 1050MB | 1867ms | 1ms | 1ms |
+| CSR | wiki-Talks | 1MB | 135ms | 142ms | 219ms |
+| CSR | cit-Patents | 28MB | 1789ms | 40ms | 35ms |
+| CSR | dota-league | 1023MB | 1867ms | 1ms | 1ms |
 | AL | wiki-Talks | 455MB | 695ms | 767ms | 696ms |
 | AL | cit-Patents | 1182MB | 5443ms | 186ms | 188ms |
 | AL | dota-league | 3640MB | 8967ms | 197ms | 217ms |
