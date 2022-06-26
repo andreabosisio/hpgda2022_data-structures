@@ -1,4 +1,4 @@
-# Compressed Sparse Row: A dynamic graph rappresentation for HPGDA2022
+# [HPGDA2022] Compressed Sparse Row: An efficient graph rappresentation 
 In the Data Structure track of the HPGDA contest there is the chance to play with different sparse
 graph representations and explore their runtime performance to improve. In particular, the challenge
 requires the creation of an appropriate data structure for the implementation of a graph, a population
