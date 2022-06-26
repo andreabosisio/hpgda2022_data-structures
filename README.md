@@ -33,6 +33,7 @@ To compile the code just run ```make``` in the root folder.
 1. *number of iterations* of graph population, BFS and DFS (required);
 1. `-U` if the graph is undirected (default is directed);
 1. `-d` for debugging mode (default is no debugging)
+1. `-s` to run the serial version of the populate (default is parallel) 
 To run the example (3 iterations) on the ```example_directed``` graph, with source vertex 2:
 ``` 
 bin/exe data/example_directed 2 3 -d
