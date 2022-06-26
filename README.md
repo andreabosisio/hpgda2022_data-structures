@@ -1,4 +1,4 @@
-# Compressed Sparse Row: A dynamic graph rappresentation for HPGDA2022
+# [HPGDA2022] Compressed Sparse Row: an efficient representation for sparse graphs
 In the Data Structure track of the HPGDA contest there is the chance to play with different sparse
 graph representations and explore their runtime performance to improve. In particular, the challenge
 requires the creation of an appropriate data structure for the implementation of a graph, a population
@@ -33,6 +33,8 @@ To compile the code just run ```make``` in the root folder.
 1. *number of iterations* of graph population, BFS and DFS (required);
 1. `-U` if the graph is undirected (default is directed);
 1. `-d` for debugging mode (default is no debugging)
+1. `-s` to run the serial version of the populate (default is parallel) 
+
 To run the example (3 iterations) on the ```example_directed``` graph, with source vertex 2:
 ``` 
 bin/exe data/example_directed 2 3 -d
