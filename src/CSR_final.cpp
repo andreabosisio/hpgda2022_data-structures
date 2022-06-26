@@ -48,18 +48,19 @@ void CSR::populate(std::tuple<uint64_t, uint64_t, double> *e_list)
 */
 
     // cumulative sum
-    std::partial_sum(row_ptr, row_ptr + (num_vertices+2), row_ptr); // PARALLELIZE with reduction? mhh no...
+    std::partial_sum(row_ptr, row_ptr + (num_vertices+2), row_ptr);
 
-    // counting sort: sorting col_idx_weights
+    
+    // counting sort: sorting col_idx and weights
     // copying row_ptr into count which will be used for the counting sort and setting the locks for the count vector
-    std::copy(row_ptr + 1, row_ptr + 1 + num_vertices, count); // CONSIDER COMMITTING IT 
-
     omp_lock_t count_locks[num_vertices];
     #pragma omp parallel for 
     for (uint64_t i = 0; i < num_vertices; i++)
     {   
+        count[i] = row_ptr[i+1];
         omp_init_lock(&count_locks[i]);
     }
+
     #pragma omp parallel 
     {   
         std::tuple<uint64_t, uint64_t, double> curr_edge;
@@ -67,8 +68,9 @@ void CSR::populate(std::tuple<uint64_t, uint64_t, double> *e_list)
         uint64_t new_pos;
 
         #pragma omp for 
-        for (uint64_t i = 0; i < num_edges; i++) 
-        {          
+        for (uint64_t i = 0; i < num_edges; i++) // at the end i = UINT64_MAX
+        {      
+            
             curr_edge = e_list[i];
             curr_vertex = std::get<0>(curr_edge);
             
@@ -81,7 +83,7 @@ void CSR::populate(std::tuple<uint64_t, uint64_t, double> *e_list)
             // unlocking curr_vertex
             omp_unset_lock(&count_locks[curr_vertex]);
 
-            col_idx_weight[new_pos] = std::make_pair(std::get<1>(curr_edge), std::get<2>(curr_edge)); 
+            col_idx_weight[new_pos] = std::make_pair(std::get<1>(curr_edge), std::get<2>(curr_edge));
         }
     }
 
@@ -106,12 +108,16 @@ void CSR::populate_serial_execution(std::tuple<uint64_t, uint64_t, double> *e_li
     for (uint64_t n = 0; n < num_edges; ++n)
         row_ptr[std::get<0>(e_list[n]) + 1]++;
 
-     // cumulative sum
-    std::partial_sum(row_ptr, row_ptr + (num_vertices+2), row_ptr); 
+    // cumulative sum
+    // counting sort: sorting col_idx and weights
+    // copying row_ptr into count which will be used for the counting sort
 
-    // counting sort: sorting col_idx_weights
-    // copying row_ptr into count which will be used for the counting sort and setting the locks for the count vector
-    std::copy(row_ptr + 1, row_ptr + 1 + num_vertices, count);  
+    for (uint64_t i = 1; i <= num_vertices; i++)
+    {
+        row_ptr[i] += row_ptr[i - 1];
+        count[i - 1] = row_ptr[i];
+    }
+    row_ptr[num_vertices + 1] += row_ptr[num_vertices];
 
     std::tuple<uint64_t, uint64_t, double> curr_edge;
     uint64_t curr_vertex;

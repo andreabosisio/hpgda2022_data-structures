@@ -82,6 +82,7 @@ public:
     void finished();
 
     void populate(std::tuple<uint64_t, uint64_t, double> *e_list);
+    void populate_serial_execution(std::tuple<uint64_t, uint64_t, double> *e_list);
 
     void print();
 };

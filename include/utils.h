@@ -51,6 +51,14 @@ boost::bimap<uint64_t, uint64_t> load_graph(std::string filename, bool undirecte
     }
     eFile.seekg(0);
 
+    
+    if(tmp.size() < 2) 
+    {
+        std::cout << "Incorrect format file / non-existing file" << std::endl;
+        exit(EXIT_FAILURE);
+    }
+
+
     bool weighted = false;
     if (tmp.size() == 3)
         weighted = true;

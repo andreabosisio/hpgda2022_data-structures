@@ -37,18 +37,32 @@ int main(int argc, char **argv)
 
     // default: directed graph
     // default: debugging inactive
+    // default: parallel execution of populate (population of the graph) 
     bool undirected = false;
     bool debug = false;
+    bool serial_execution = false;
     if (argc > 4)
     {
         undirected = (std::string(argv[4]) == "-U") ? true : false;
         debug = (std::string(argv[4]) == "-d") ? true : false;
+        serial_execution = (std::string(argv[4]) == "-s") ? true : false;
         if (argc > 5)
         {
             if (!undirected)
                 undirected = (std::string(argv[5]) == "-U") ? true : false;
             if (!debug)
                 debug = (std::string(argv[5]) == "-d") ? true : false;
+            if (!serial_execution)
+                serial_execution = (std::string(argv[5]) == "-s") ? true : false;
+            if (argc > 6)
+            {   
+                if (!undirected)
+                    undirected = (std::string(argv[6]) == "-U") ? true : false;
+                if (!debug)
+                    debug = (std::string(argv[6]) == "-d") ? true : false;
+                if (!serial_execution)
+                    serial_execution = (std::string(argv[5]) == "-s") ? true : false;
+            }    
         }
     }
 
@@ -94,7 +108,6 @@ int main(int argc, char **argv)
 
     for (uint64_t i = 0; i < num_iterations; i++)
     {
-
         if (debug)
             std::cout << "Iteration " << i + 1 << std::endl
                       << std::endl;
@@ -103,7 +116,7 @@ int main(int argc, char **argv)
 
         // populate the graph and measure time
         auto begin_populate = std::chrono::high_resolution_clock::now();
-        graph->populate(edges);
+        graph->populate(serial_execution, edges);
         auto end_populate = std::chrono::high_resolution_clock::now();
         auto elapsed_populate = std::chrono::duration_cast<std::chrono::milliseconds>(end_populate - begin_populate);
         if (debug)
@@ -122,7 +135,9 @@ int main(int argc, char **argv)
                       << std::endl;
         else
             std::cout << rss_tmp / 1024 << ",";
-        if (debug) graph->print();
+
+        //if (debug) graph->print();
+        
         double result = -1;
         
         // execute bfs and measure time

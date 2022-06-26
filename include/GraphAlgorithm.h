@@ -34,9 +34,12 @@ public:
     }
 
     // required
-    void populate(std::tuple<uint64_t, uint64_t, double> *edges)
-    {
-        graph->populate(edges);
+    void populate(bool serial_execution, std::tuple<uint64_t, uint64_t, double> *edges)
+    {   
+        if (serial_execution)
+            graph->populate_serial_execution(edges);
+        else    
+            graph->populate(edges);
     }
 
     // required
@@ -138,6 +141,7 @@ public:
 
     void print() 
     {
+        // print all the infos of the CSR 
         graph->print();
     }
 };
